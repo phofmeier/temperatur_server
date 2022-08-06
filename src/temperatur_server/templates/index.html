@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js" integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k" crossorigin="anonymous"></script>
+    <script src="https://cdn.plot.ly/plotly-2.3.0.min.js"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
+
+    <script type="module" src="{{ url_for('static',filename='js/temp_gauge.js') }}"></script>
+    <script type="module" src="{{ url_for('static',filename='js/temp_plot.js') }}"></script>
+
+    <title>Temperature Server</title>
+</head>
+
+<body>
+    <h1>Temperature Server</h1>
+    <div style="float:right; width: 20%">
+        <h2>Referenz Temperatur</h2>
+        <label for="OvenRef">Ofen Referenz Temperatur [°C]</label>
+        <input type="number" step="0.1" id="OvenRef" , value="90.0" , min="0" , max="180">
+        <br>
+        <label for="CoreRef">Kern Referenz Temperatur [°C]</label>
+        <input type="number" step="0.1" id="CoreRef" , value="60.0" , min="0" , max="180">
+        <br>
+        <hr>
+        <h2>Zeit</h2>
+        <button id="StartTimeButton">Set Start Time</button>
+        <br>
+        <label for="StartTime">Start Zeitpunkt</label>
+        <br>
+        <input type="datetime-local" id="StartTime">
+        <br>
+        <label for="ElapsedTime">Laufende Zeit</label>
+        <br>
+        <label id="ElapsedTime">0:0:0</label>
+
+
+    </div>
+
+    <div style="float:left; width: 80%">
+        <div style="float:left; width: 50%">
+            <div id="Temp_1"></div>
+        </div>
+        <div style="float:right; width: 50%">
+            <div id="Temp_2"></div>
+        </div>
+    </div>
+    <div style="clear:both"></div>
+
+    <div id="Plot" style="float:left; width: 80%"></div>
+    </div>
+
+    <script type="module" src="{{ url_for('static',filename='js/main.js') }}"></script>
+
+</body>
+
+</html>

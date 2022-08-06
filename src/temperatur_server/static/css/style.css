@@ -1,0 +1,176 @@
+@charset "UTF-8";
+@import url("https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,400,400i,700,700i,900,900i");
+:root {
+  --blue: #007bff;
+  --indigo: #6610f2;
+  --purple: #6f42c1;
+  --pink: #eb5175;
+  --red: #FD5D93;
+  --orange: #f06161;
+  --yellow: #ffc107;
+  --green: #00F2C3;
+  --teal: #20c997;
+  --cyan: #17a2b8;
+  --white: #fff;
+  --gray: #6c757d;
+  --gray-dark: #343a40;
+  --primary: #f06161;
+  --secondary: #6c757d;
+  --success: #00F2C3;
+  --info: #17a2b8;
+  --warning: #ffc107;
+  --danger: #FD5D93;
+  --light: #f8f9fa;
+  --dark: #343a40;
+  --breakpoint-xs: 0;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+  --font-family-sans-serif: "Raleway", sans-serif; 
+  --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+html {
+  font-family: sans-serif;
+  line-height: 1.15;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+body {
+  margin: 0;
+  font-family: "Raleway", sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #fff;
+  text-align: left;
+  background-color: #000;
+}
+.main {
+  margin-right: 160px; /* Same as the width of the sidebar */
+  margin-top: 200px;
+  padding: 0px 10px;
+  position: relative;
+}
+
+.plot {
+  position: relative;
+}
+
+.sidebar {
+  height: 100%; /* Full-height: remove this if you want "auto" height */
+  width: 160px; /* Set the width of the sidebar */
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  right: 0;
+  background-color: #111; /* Black */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 100px;
+}
+/* Split the screen in half */
+.split {
+  height: 500px;
+  width: 50%;
+  position: sticky;
+  z-index: 1;
+  top: 0;
+  overflow-x: hidden;
+  padding-top: 100px;
+  margin-right: 160px;
+}
+
+/* Control the left side */
+.left {
+  left: 0;
+}
+
+/* Control the right side */
+.right {
+  right: 0;
+}
+
+
+.gauge {
+  position: relative;
+  width: 7em;
+  height: 5.8em;
+  margin: 0.5em auto;
+  font-size: 5em;
+  direction: ltr;
+}
+
+.gauge-inner {
+  position: relative;
+  top: -4.85em;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.gauge.load .gauge-inner {
+  opacity: 1;
+}
+.gauge-inner .bar {
+  left: 50%;
+  position: absolute;
+  transform-origin: 0 2.5em;
+  width: 0.03em;
+  height: 0.2em;
+  background: rgba(255, 255, 255, 0.2);
+}
+.gauge-inner .bar.peak {
+  height: 0.35em;
+}
+
+.gauge-outer {
+  position: relative;
+  height: 100%;
+  margin-top: 0.3em;
+}
+.gauge-outer .bar {
+  position: absolute;
+  width: 0.05em;
+  height: 0.7em;
+  left: 50%;
+  transform-origin: 0 3.43em;
+  background-color: rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.gauge.load .gauge-outer .bar {
+  opacity: 1;
+}
+
+.gauge-digits {
+  position: absolute;
+  height: 81%;
+  width: 70%;
+  top: 1.3em;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.4);
+  opacity: 0;
+  transition: opacity 0.5s 0.5s;
+}
+.gauge.load .gauge-digits {
+  opacity: 1;
+}
+.gauge-digits.scale {
+  transform: translateX(-50%) scale(0.8);
+}
+.gauge-digits .digit {
+  position: absolute;
+  font-size: 0.4em;
+  line-height: 0.2;
+}
+.gauge-digits .current-digit {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5em;
+  color: rgba(255, 255, 255, 0.9);
+}
+.gauge-digits .current-digit:after {
+  content: "°";
+}
