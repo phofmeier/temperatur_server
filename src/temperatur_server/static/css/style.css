@@ -1,5 +1,6 @@
 @charset "UTF-8";
 @import url("https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,400,400i,700,700i,900,900i");
+
 :root {
   --blue: #007bff;
   --indigo: #6610f2;
@@ -27,7 +28,7 @@
   --breakpoint-md: 768px;
   --breakpoint-lg: 992px;
   --breakpoint-xl: 1200px;
-  --font-family-sans-serif: "Raleway", sans-serif; 
+  --font-family-sans-serif: "Raleway", sans-serif;
   --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
@@ -48,8 +49,10 @@ body {
   text-align: left;
   background-color: #000;
 }
+
 .main {
-  margin-right: 160px; /* Same as the width of the sidebar */
+  margin-right: 160px;
+  /* Same as the width of the sidebar */
   margin-top: 200px;
   padding: 0px 10px;
   position: relative;
@@ -60,16 +63,24 @@ body {
 }
 
 .sidebar {
-  height: 100%; /* Full-height: remove this if you want "auto" height */
-  width: 160px; /* Set the width of the sidebar */
-  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-  z-index: 1; /* Stay on top */
-  top: 0; /* Stay at the top */
+  height: 100%;
+  /* Full-height: remove this if you want "auto" height */
+  width: 160px;
+  /* Set the width of the sidebar */
+  position: fixed;
+  /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1;
+  /* Stay on top */
+  top: 0;
+  /* Stay at the top */
   right: 0;
-  background-color: #111; /* Black */
-  overflow-x: hidden; /* Disable horizontal scroll */
+  background-color: #111;
+  /* Black */
+  overflow-x: hidden;
+  /* Disable horizontal scroll */
   padding-top: 100px;
 }
+
 /* Split the screen in half */
 .split {
   height: 500px;
@@ -108,9 +119,11 @@ body {
   opacity: 0;
   transition: opacity 0.5s;
 }
+
 .gauge.load .gauge-inner {
   opacity: 1;
 }
+
 .gauge-inner .bar {
   left: 50%;
   position: absolute;
@@ -119,6 +132,7 @@ body {
   height: 0.2em;
   background: rgba(255, 255, 255, 0.2);
 }
+
 .gauge-inner .bar.peak {
   height: 0.35em;
 }
@@ -128,6 +142,7 @@ body {
   height: 100%;
   margin-top: 0.3em;
 }
+
 .gauge-outer .bar {
   position: absolute;
   width: 0.05em;
@@ -138,6 +153,7 @@ body {
   opacity: 0;
   transition: opacity 0.5s;
 }
+
 .gauge.load .gauge-outer .bar {
   opacity: 1;
 }
@@ -153,17 +169,21 @@ body {
   opacity: 0;
   transition: opacity 0.5s 0.5s;
 }
+
 .gauge.load .gauge-digits {
   opacity: 1;
 }
+
 .gauge-digits.scale {
   transform: translateX(-50%) scale(0.8);
 }
+
 .gauge-digits .digit {
   position: absolute;
   font-size: 0.4em;
   line-height: 0.2;
 }
+
 .gauge-digits .current-digit {
   left: 50%;
   top: 50%;
@@ -171,6 +191,7 @@ body {
   font-size: 1.5em;
   color: rgba(255, 255, 255, 0.9);
 }
+
 .gauge-digits .current-digit:after {
   content: "°";
 }

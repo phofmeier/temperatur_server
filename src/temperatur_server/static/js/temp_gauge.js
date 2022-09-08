@@ -1,5 +1,5 @@
 export class TempGauge {
-    constructor(id="", title="Kerntemperatur", min = 20.0, max = 160.0) {
+    constructor(id = "", title = "Kerntemperatur", min = 20.0, max = 160.0) {
         this.id = id;
         this.layout = {
             // margin: { t: 25, r: 25, l: 25, b: 25 },
@@ -38,23 +38,23 @@ export class TempGauge {
         ];
     }
 
-    render(){
+    render() {
         Plotly.newPlot(this.id, this.data, this.layout);
     };
 
     /**
      * @param {float} val
      */
-    set value(val){
+    set value(val) {
         this.data[0]["value"] = val;
     };
 
-    set reference(ref){
+    set reference(ref) {
         this.data[0]["delta"]["reference"] = ref;
         this.data[0]["gauge"]["threshold"]["value"] = ref;
     };
 
-    set margin(margin){
+    set margin(margin) {
         const [min, min_warn, max_warn, max] = margin;
         this.data[0]["gauge"]["steps"][0]["range"][1] = min;
         this.data[0]["gauge"]["steps"][1]["range"][0] = min;

@@ -8,12 +8,14 @@ let temp_gauge_2 = new TempGauge("Temp_2", "Kerntemperatur");
 temp_gauge_2.value = 0.0;
 
 let temp_plot = new TempPlot("Plot");
-
-ovenRefChange();
-coreRefChange();
+temp_plot.start_time = document.getElementById('StartTime').value
 
 // Start here
 let socket = io.connect();
+
+ovenRefChange();
+coreRefChange();
+socket.emit("getTimeSeries", "end", receiveDataSeries);
 
 socket.on('new_temp_data', (temp_data) => {
     temp_gauge_1.value = temp_data[0][1];
@@ -21,7 +23,8 @@ socket.on('new_temp_data', (temp_data) => {
     temp_plot.add_data(temp_data);
     renderAll();
 });
-window.setInterval(function () { socket.emit("timer"); updateElapsedTime(); }, 1000);
+window.setInterval(function () { //socket.emit("timer"); 
+    updateElapsedTime(); }, 1000);
 
 let ofen_ref = document.getElementById("OvenRef");
 ofen_ref.addEventListener("change", ovenRefChange);
@@ -29,12 +32,20 @@ ofen_ref.addEventListener("change", ovenRefChange);
 let core_ref = document.getElementById("CoreRef");
 core_ref.addEventListener("change", coreRefChange);
 
-window.addEventListener("load", setStartTimeNow);
+// window.addEventListener("load", setStartTimeNow);
 
 let start_time_button = document.getElementById("StartTimeButton");
 start_time_button.addEventListener("click", setStartTimeNow);
 let start_time = new Date();
 
+function receiveDataSeries(server_response) {
+    let data = JSON.parse(server_response) 
+    temp_gauge_1.value = data[0].slice(-1)[0][1];
+    temp_gauge_2.value = data[1].slice(-1)[0][1];
+    temp_plot.add_data_series(data);
+    renderAll();
+
+}
 
 function ovenRefChange(event) {
     let ofen_ref = document.getElementById("OvenRef");
@@ -42,6 +53,7 @@ function ovenRefChange(event) {
     temp_plot.reference_1 = new_ref_value;
     temp_gauge_1.margin = [new_ref_value - 10.0, new_ref_value - 5.0, new_ref_value + 5.0, new_ref_value + 10.0];
     temp_gauge_1.reference = new_ref_value;
+    socket.emit("newOvenRef", new_ref_value);
     renderAll();
 }
 
@@ -51,32 +63,34 @@ function coreRefChange(event) {
     temp_plot.reference_2 = new_ref_value;
     temp_gauge_2.reference = new_ref_value;
     temp_gauge_2.margin = [0.0, 0.0, new_ref_value - 3.0, new_ref_value + 1.0];
+    socket.emit("newCoreRef", new_ref_value);
     renderAll();
 }
 
-function renderAll(){
+function renderAll() {
     temp_gauge_1.render();
     temp_gauge_2.render();
     temp_plot.render();
 }
 
-function setStartTimeNow(event){
+function setStartTimeNow(event) {
     let now = new Date();
     start_time = now;
     temp_plot.start_time = now;
     let now_local = new Date(now);
     now_local.setMinutes(now.getMinutes() - now_local.getTimezoneOffset());
-  
+
     now_local.setMilliseconds(null)
     now_local.setSeconds(null)
-  
+
     document.getElementById('StartTime').value = now_local.toISOString().slice(0, -1);
     updateElapsedTime();
+    socket.emit("newStartTime", now.valueOf()*1e6);
     renderAll();
-    
-  };
 
-function updateElapsedTime(){
+};
+
+function updateElapsedTime() {
     let now = new Date();
     let time_diff = new Date(now.getTime() - start_time.getTime())
     document.getElementById("ElapsedTime").innerHTML = time_diff.toISOString().slice(11, -5);
