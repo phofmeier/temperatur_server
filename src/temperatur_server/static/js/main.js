@@ -12,10 +12,12 @@ temp_plot.start_time = document.getElementById('StartTime').value
 
 // Start here
 let socket = io.connect();
+let start_time = new Date().valueOf() * 1e6;
 
 ovenRefChange();
 coreRefChange();
 socket.emit("getTimeSeries", "end", receiveDataSeries);
+socket.emit("getStartTime", "now", setStartTime);
 
 socket.on('new_temp_data', (temp_data) => {
     temp_gauge_1.value = temp_data[0][1];
@@ -32,11 +34,10 @@ ofen_ref.addEventListener("change", ovenRefChange);
 let core_ref = document.getElementById("CoreRef");
 core_ref.addEventListener("change", coreRefChange);
 
-// window.addEventListener("load", setStartTimeNow);
+document.getElementById('StartTime').addEventListener("change", startTimeChanged);
 
 let start_time_button = document.getElementById("StartTimeButton");
 start_time_button.addEventListener("click", setStartTimeNow);
-let start_time = new Date();
 
 function receiveDataSeries(server_response) {
     let data = JSON.parse(server_response) 
@@ -73,9 +74,33 @@ function renderAll() {
     temp_plot.render();
 }
 
+function startTimeChanged(event) {
+    let new_start_time = new Date(document.getElementById('StartTime').value);
+    start_time = new_start_time.valueOf() * 1e6;
+    temp_plot.start_time = new Date(start_time * 1e-6);
+    socket.emit("newStartTime", start_time);
+    updateElapsedTime();
+    renderAll();
+};
+
+function setStartTime(start_time_server) {
+    start_time = start_time_server;
+    let now = new Date(start_time * 1e-6);
+    temp_plot.start_time =  now;
+    let new_start_time = new Date(start_time * 1e-6);
+    new_start_time.setMinutes(now.getMinutes() - new_start_time.getTimezoneOffset());
+
+    new_start_time.setMilliseconds(null);
+    new_start_time.setSeconds(null);
+
+    document.getElementById('StartTime').value = new_start_time.toISOString().slice(0, -1);
+    updateElapsedTime();
+    renderAll();
+};
+
 function setStartTimeNow(event) {
     let now = new Date();
-    start_time = now;
+    start_time = now.valueOf() * 1e6;
     temp_plot.start_time = now;
     let now_local = new Date(now);
     now_local.setMinutes(now.getMinutes() - now_local.getTimezoneOffset());
@@ -92,6 +117,6 @@ function setStartTimeNow(event) {
 
 function updateElapsedTime() {
     let now = new Date();
-    let time_diff = new Date(now.getTime() - start_time.getTime())
+    let time_diff = new Date(now.getTime() - new Date(start_time * 1e-6))
     document.getElementById("ElapsedTime").innerHTML = time_diff.toISOString().slice(11, -5);
 }

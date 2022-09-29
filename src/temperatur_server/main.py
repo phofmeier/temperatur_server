@@ -75,6 +75,11 @@ def newStarTime(data):
     global start_time
     start_time=int(data)
 
+@socketio.on("getStartTime")
+def getStarTime(data):
+    global start_time
+    return start_time
+
 def main():
     socketio.run(app, port=port, host=host, debug=True)
 
