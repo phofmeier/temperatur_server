@@ -28,7 +28,7 @@ class MeatEstimator():
         for i in range(len(meas_inner)-1):
             x_sym = cad.SX.sym("x_" + str(i+1), self._num_elements)
             w.append(x_sym)
-            x_init.append(np.zeros(self._num_elements))
+            x_init.append(np.linspace(meas_outer[i],meas_inner[i+1],self._num_elements))
             x_next = self._model.next_state_casadi(x_curr,meas_outer[i],r,self._dt)
             g.append(x_sym - x_next)
             lbg.append(np.zeros(self._num_elements))
