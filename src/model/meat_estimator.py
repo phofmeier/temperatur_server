@@ -1,9 +1,10 @@
 from meat_model import MeatModel
 import casadi as cad
 import numpy as np
+
 class MeatEstimator():
     def __init__(self) -> None:
-        self._num_elements = 10
+        self._num_elements = 20
         self._dt= 10.0
         self._model = MeatModel(self._num_elements)
 
@@ -43,14 +44,21 @@ class MeatEstimator():
         states = np.reshape(np.array(sol["x"][1:]),(-1, self._num_elements))
         return r, states
 
+# from oven_model import OvenModel
 # est = MeatEstimator()
+# oven = OvenModel()
 # import matplotlib.pyplot as plt
 # dt = 10.0
 # t = np.linspace(0,600*dt,num=1000)
 # outer_meas = 10.0* np.ones_like(t)
 # inner_meas = [1.0]
-# x = np.ones(10)
+# heating = True
+# outer_meas[0] = 44.0
+# oven_state = np.array([44.0 ,0.0])
+# x = np.ones(20)
 # for i in range(999):
+#     oven_state, heating = oven.next_temp(oven_state,heating,55.0,45.0,0.0001, 0.004, 20.0,0.01,dt)
+#     outer_meas[i+1] = oven_state[0]
 #     x = est._model.next_state(x,outer_meas[i],7.2,dt)
 #     inner_meas.append(x[-1] + np.random.normal()*0.1)
 
