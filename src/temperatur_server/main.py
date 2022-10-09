@@ -7,7 +7,7 @@ from measurement_parser import parse_string
 from database import MeasurementDB
 
 port = 5000
-host = '127.0.0.1'
+host = "192.168.2.106" #'127.0.0.1'
 
 app = Flask(__name__,)
 socketio = SocketIO(app)
@@ -22,13 +22,16 @@ start_time = time.time_ns()
 
 @app.route("/input", methods=['POST'])
 def receive_input():
-    data = request.data
     data = request.get_data(as_text=True)
     new_sensor_data = parse_string(data)
     database.append(new_sensor_data)
-    
-    temp_1 = [new_sensor_data[0]["ts"],new_sensor_data[0]["value"] ]
-    temp_2 = [new_sensor_data[1]["ts"],new_sensor_data[1]["value"] ]
+    temp_1 = 0
+    temp_2 = 0
+    for data in new_sensor_data:
+        if data["name"] == "1":
+            temp_1 = [data["ts"],data["value"] ]
+        elif data["name"] == "2":
+            temp_2 = [data["ts"],data["value"] ]
     socketio.emit("new_temp_data",[temp_1,temp_2])
     return "Measurement Received"
 
@@ -56,7 +59,6 @@ def timer_callback():
 
 @socketio.on("getTimeSeries")
 def getTimeSeries(date):
-    print(start_time)
     return_value =  database.getBetweenTime(start_time-(10*60*1e9))
     return return_value
 

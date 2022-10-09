@@ -39,6 +39,33 @@ document.getElementById('StartTime').addEventListener("change", startTimeChanged
 let start_time_button = document.getElementById("StartTimeButton");
 start_time_button.addEventListener("click", setStartTimeNow);
 
+let fullscreen_button = document.getElementById("FullscreenButton");
+fullscreen_button.addEventListener("click", fullscreen_toggler);
+
+function fullscreen_toggler(event) { 
+    if (window.matchMedia('(display-mode: fullscreen)').matches) {
+        exitFullscreen();  
+    } else { 
+        enterFullscreen(document.documentElement); 
+     }
+}
+
+function enterFullscreen(element) {
+    if(element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if(element.webkitRequestFullscreen) {  // iOS Safari
+      element.webkitRequestFullscreen();
+    }
+}
+
+function exitFullscreen() {
+    if(document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if(document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    }
+}
+
 function receiveDataSeries(server_response) {
     let data = JSON.parse(server_response) 
     temp_gauge_1.value = data[0].slice(-1)[0][1];

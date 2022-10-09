@@ -1,14 +1,29 @@
+import time
 import pandas as pd
 
 class MeasurementDB:
     def __init__(self) -> None:
         self.db_1 = pd.DataFrame(columns=["ts", "name", "value"])
         self.db_2 = pd.DataFrame(columns=["ts", "name", "value"])
+        self.last_save_ts = 0.0
+        self.db_name = time.strftime("%Y_%m_%d_%H_%M")
+
+        
     def append(self, meas_data):
-        self.db_1 = self.db_1.append(meas_data[0], ignore_index=True,sort=False)
-        self.db_2 = self.db_2.append(meas_data[1], ignore_index=True,sort=False)
+        for data in meas_data:
+            if data["name"] == "1":
+                self.db_1 = self.db_1.append(data, ignore_index=True,sort=False)
+            elif data["name"] == "2":
+                self.db_2 = self.db_2.append(data, ignore_index=True,sort=False)
+        if time.time() > self.last_save_ts + 60.0:
+            self.last_save_ts = time.time()
+            self.db_1.to_csv("./data/"+self.db_name+"_db_1.csv")
+            self.db_2.to_csv("./data/"+self.db_name+"_db_2.csv")
+
 
     def getBetweenTime(self, start, stop=None):
+        self.db_1.sort_values(by='ts', ascending = True, inplace=True)
+        self.db_2.sort_values(by='ts', ascending = True, inplace=True)
         start_time = pd.to_datetime(start)
         if stop is None:
             stop_time = None

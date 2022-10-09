@@ -21,6 +21,7 @@ export class TempPlot {
             // width: 1500,
             // height: 400,
             //margin: { t: 25, r: 25, l: 25, b: 25 },
+            margin: { t: 0, r: 25, l: 40, b: 40 },
             paper_bgcolor: "black",
             plot_bgcolor: "black",
             font: { color: "white", family: "Arial" },
@@ -48,7 +49,8 @@ export class TempPlot {
                 font: { size: 16 },
                 x: 1,
                 xanchor: 'right',
-                y: 0
+                y: 1,
+                yanchor: 'bottom'
             },
             shapes: [{
                 type: 'line',
