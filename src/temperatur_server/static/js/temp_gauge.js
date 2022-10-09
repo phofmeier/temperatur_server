@@ -2,7 +2,7 @@ export class TempGauge {
     constructor(id = "", title = "Kerntemperatur", min = 20.0, max = 160.0) {
         this.id = id;
         this.layout = {
-            margin: { t: 0, r: 25, l: 25, b: 0 },
+            margin: { t: 0, r: 30, l: 30, b: 0 },
             paper_bgcolor: "black",
             font: { color: "white", family: "Arial" }
         };

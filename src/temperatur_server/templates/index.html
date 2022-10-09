@@ -18,7 +18,20 @@
 
 <body>
     <h1>Temperature Server</h1>
-    <div style="float:right; width: 20%">
+    <div style="float:left; height: 90vh; width: 80%;">
+        <div style="float:left; height: 50%; width: 50%;">
+            <div id="Temp_1"></div>
+        </div>
+        <div style="float:right; height: 50%; width: 50%;">
+            <div id="Temp_2"></div>
+        </div>
+    
+    <div style="clear:both"></div>
+    <div id="Plot" style="float:left; height: 50%; width: 100%;"></div>
+    </div>
+    </div>
+
+    <div style="float:right; width: 20%; height: 90%">
         <h2>Referenz Temperatur</h2>
         <label for="OvenRef">Ofen Referenz Temperatur [°C]</label>
         <input type="number", step="0.1", id="OvenRef", value= {{ oven_ref_temp }} , min="0" , max="180">
@@ -42,21 +55,6 @@
         <h2>Ansicht</h2>
         <button id="FullscreenButton">Fullscreen</button>
         <br>
-
-
-    </div>
-
-    <div style="float:left; width: 80%">
-        <div style="float:left; width: 50%">
-            <div id="Temp_1"></div>
-        </div>
-        <div style="float:right; width: 50%">
-            <div id="Temp_2"></div>
-        </div>
-    </div>
-    <div style="clear:both"></div>
-
-    <div id="Plot" style="float:left; width: 80%"></div>
     </div>
 
     <script type="module" src="{{ url_for('static',filename='js/main.js') }}"></script>

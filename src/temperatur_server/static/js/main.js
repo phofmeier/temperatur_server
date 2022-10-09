@@ -43,7 +43,7 @@ let fullscreen_button = document.getElementById("FullscreenButton");
 fullscreen_button.addEventListener("click", fullscreen_toggler);
 
 function fullscreen_toggler(event) { 
-    if (window.matchMedia('(display-mode: fullscreen)').matches) {
+    if (window.matchMedia('(display-mode: fullscreen)').matches || document.fullscreenElement) {
         exitFullscreen();  
     } else { 
         enterFullscreen(document.documentElement); 
