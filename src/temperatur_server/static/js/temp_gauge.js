@@ -1,5 +1,5 @@
 export class TempGauge {
-    constructor(id = "", title = "Kerntemperatur", min = 20.0, max = 160.0) {
+    constructor(id = "", title = "Kerntemperatur", min = 20.0, max = 130.0) {
         this.id = id;
         this.layout = {
             margin: { t: 0, r: 30, l: 30, b: 0 },

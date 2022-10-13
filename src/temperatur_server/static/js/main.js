@@ -13,6 +13,7 @@ temp_plot.start_time = document.getElementById('StartTime').value
 // Start here
 let socket = io.connect();
 let start_time = new Date().valueOf() * 1e6;
+let end_time = new Date().valueOf() * 1e6;
 
 ovenRefChange();
 coreRefChange();
@@ -41,6 +42,44 @@ start_time_button.addEventListener("click", setStartTimeNow);
 
 let fullscreen_button = document.getElementById("FullscreenButton");
 fullscreen_button.addEventListener("click", fullscreen_toggler);
+
+let show_fit_checkbox = document.getElementById("CheckboxFit");
+show_fit_checkbox.addEventListener('change', () => {
+    if (show_fit_checkbox.checked) {
+        temp_plot.show_fit = true;
+    } else {
+        temp_plot.show_fit = false;
+    }
+    renderAll();
+  });
+
+let show_pred_checkbox = document.getElementById("CheckboxPred");
+show_pred_checkbox.addEventListener('change', () => {
+    if (show_pred_checkbox.checked) {
+        temp_plot.show_pred = true;
+    } else {
+        temp_plot.show_pred = false;
+    }
+    renderAll();
+  });
+
+  let show_full_state_checkbox = document.getElementById("CheckboxFullState");
+  show_full_state_checkbox.addEventListener('change', () => {
+      if (show_full_state_checkbox.checked) {
+          temp_plot.show_full_state = true;
+      } else {
+          temp_plot.show_full_state = false;
+      }
+      renderAll();
+    });
+
+socket.on('new_prediction', (pred_data) => {
+    end_time = pred_data[0][6]
+    let end_time_date = new Date(end_time * 1e-6);
+    document.getElementById("EndTime").innerHTML = end_time_date.toLocaleString();
+    temp_plot.add_prediction(pred_data)
+    renderAll();
+});
 
 function fullscreen_toggler(event) { 
     if (window.matchMedia('(display-mode: fullscreen)').matches || document.fullscreenElement) {
@@ -146,4 +185,7 @@ function updateElapsedTime() {
     let now = new Date();
     let time_diff = new Date(now.getTime() - new Date(start_time * 1e-6))
     document.getElementById("ElapsedTime").innerHTML = time_diff.toISOString().slice(11, -5);
+    let remaining_time = new Date(new Date(end_time * 1e-6) - now.getTime())
+    document.getElementById("RemainingTime").innerHTML = remaining_time.toISOString().slice(11, -5);
+
 }

@@ -1,3 +1,4 @@
+from os import wait
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO
 from multiprocessing import Process, Queue
@@ -5,6 +6,7 @@ import time
 import numpy as np
 from measurement_parser import parse_string
 from database import MeasurementDB
+from model.predictor import Predictor
 
 port = 5000
 host = "192.168.2.106" #'127.0.0.1'
@@ -12,7 +14,8 @@ host = "192.168.2.106" #'127.0.0.1'
 app = Flask(__name__,)
 socketio = SocketIO(app)
 
-q = Queue(maxsize=20)
+data_queue = Queue(maxsize=1)
+result_queue = Queue(maxsize=1)
 database = MeasurementDB()
 
 oven_ref_temp = 90.0
@@ -33,6 +36,16 @@ def receive_input():
         elif data["name"] == "2":
             temp_2 = [data["ts"],data["value"] ]
     socketio.emit("new_temp_data",[temp_1,temp_2])
+    global data_queue, result_queue
+    if data_queue.empty():
+        #data_queue.get()
+        data_queue.put(database.getInterpolBetweenTime(10, start_time) + [start_time] + [core_ref_temp])
+    if result_queue.full():
+        result = result_queue.get()
+        socketio.emit("new_prediction",[result])
+        # print("emit_prediction")
+
+
     return "Measurement Received"
 
 
@@ -82,7 +95,43 @@ def getStarTime(data):
     global start_time
     return start_time
 
+def predictor(data_queue, result_queue):
+    dt = 10.0
+    
+    while(True):
+        #print(data_queue.full())
+        #if data_queue.full():
+        predictor = Predictor()
+        try:
+            
+            data = data_queue.get()
+            start_time = data[2]
+            oven_params, meat_params = predictor.fit(data[0], data[1])
+            oven_temp, meat_state, duration_to_end = predictor.predict(data[3])
+            t_fit = start_time + np.array(range(len(meat_params[1])),dtype=np.int)*int(dt * 1e9)
+            t_pred = t_fit[-1] + np.array(range(len(oven_temp)),dtype=np.int)*int(dt * 1e9)
+            t_oven = np.array(range(len(meat_params[1])),dtype=float) * dt
+            t_end = start_time + int(duration_to_end * 1e9)
+            oven_fit = []
+            for i in range(t_oven.shape[0]):
+                oven_fit.append(predictor._oven_est._model.func(t_oven[i],*oven_params))
+
+            result = [t_fit.tolist(), oven_fit, meat_params[1].tolist(),t_pred.tolist(), oven_temp, meat_state, t_end]
+
+            result_queue.put(result)
+            time.sleep(10) 
+
+        except BaseException as err:
+            print(f"Unexpected {err=}, {type(err)=}")
+            time.sleep(10) 
+
+
 def main():
+    global data_queue, result_queue
+
+    p = Process(target=predictor, args=(data_queue, result_queue,), daemon=True)
+    p.start()
+
     socketio.run(app, port=port, host=host, debug=True)
 
 
