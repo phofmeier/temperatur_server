@@ -65,5 +65,10 @@ export class TempGauge {
         this.data[0]["gauge"]["steps"][3]["range"][1] = max;
         this.data[0]["gauge"]["steps"][4]["range"][0] = max;
     };
+
+    set max(max) {
+        this.data[0]["gauge"]["axis"]["range"][1] = max;
+        this.data[0]["gauge"]["steps"][4]["range"][1] = max;
+    };
 }
 

@@ -13,12 +13,13 @@ class MeatEstimator():
         x_init = []
         r = cad.SX.sym("r")
         x_init.append(1.0)
+        g = [r]
+        lbg = [0.0]
+        ubg = [40.0]
         x_0 = cad.SX.sym("x_0", self._num_elements)
         w = [r,x_0]
         x_init.append(np.zeros(self._num_elements))
-        g = [r]
-        lbg = [0]
-        ubg = [cad.inf]
+        
         f = (x_0[self._num_elements-1] - meas_inner[0])**2
 
         for i in range(self._num_elements-1):
@@ -36,7 +37,7 @@ class MeatEstimator():
             x_sym = cad.SX.sym("x_" + str(i+1), self._num_elements)
             w.append(x_sym)
             x_init.append(np.linspace(meas_outer[i],meas_inner[i+1],self._num_elements))
-            x_next = self._model.next_state_casadi(x_curr,meas_outer[i],r,self._dt)
+            x_next = self._model.casadi_fun(x_curr,meas_outer[i],r,self._dt)
             g.append(x_sym - x_next)
             lbg.append(np.zeros(self._num_elements))
             ubg.append(np.zeros(self._num_elements))
@@ -46,6 +47,10 @@ class MeatEstimator():
             f += (x_sym[self._num_elements-1] - meas_inner[i+1])**2
             x_curr=x_sym
         
+        g.append(x_curr)
+        lbg.append(np.zeros(self._num_elements))
+        ubg.append(200.0*np.ones(self._num_elements))
+        
         qp = {'x':cad.vertcat(*w), 'f':f, 'g':cad.vertcat(*g)}
         solver = cad.nlpsol("Solver", "ipopt",qp)
         x_init = cad.vertcat(*x_init)
@@ -53,7 +58,7 @@ class MeatEstimator():
             x_init[:self.last_x_init.shape[0]] = self.last_x_init
         sol = solver(x0=x_init, lbg=cad.vertcat(*lbg), ubg=cad.vertcat(*ubg))
         r = sol["x"][0]
-        self.last_x_init = sol["x"]
+        self.last_x_init = sol["x"].full().flatten()
         states = np.reshape(np.array(sol["x"][1:]),(-1, self._num_elements))
         return r, states
 

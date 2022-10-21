@@ -20,7 +20,7 @@ damping=0.010
 oven_state = np.array([45.0, 0.0])
 
 meat_model = MeatModel()
-meat_state = np.ones(10) * 15.0 
+meat_state = np.linspace(10.0,19.0,10)[::-1]
 
 
 for i in range(100000):

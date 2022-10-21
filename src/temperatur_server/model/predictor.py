@@ -13,6 +13,7 @@ class Predictor():
         self._meat_params = self._meat_est.fit_params(inner_measurement, outer_measurement)
         self._t0 = len(outer_measurement) * self._dt
         # print(outer_measurement)
+        print("fitted_w_0: ", self._oven_params[1])
         return self._oven_params, self._meat_params
 
     def predict(self, ref_temp, max_dur = 8*10*60*60):

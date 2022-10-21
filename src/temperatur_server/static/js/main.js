@@ -120,6 +120,8 @@ function ovenRefChange(event) {
     temp_plot.reference_1 = new_ref_value;
     temp_gauge_1.margin = [new_ref_value - 10.0, new_ref_value - 5.0, new_ref_value + 5.0, new_ref_value + 10.0];
     temp_gauge_1.reference = new_ref_value;
+    temp_gauge_1.max = new_ref_value+30.0
+    temp_gauge_2.max = new_ref_value+30.0
     socket.emit("newOvenRef", new_ref_value);
     renderAll();
 }

@@ -1,4 +1,5 @@
 from os import wait
+import traceback
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO
 from multiprocessing import Process, Queue
@@ -21,6 +22,8 @@ database = MeasurementDB()
 oven_ref_temp = 90.0
 core_ref_temp = 64.0
 start_time = time.time_ns()
+got_result = True
+last_pushed = start_time
 
 
 @app.route("/input", methods=['POST'])
@@ -36,13 +39,17 @@ def receive_input():
         elif data["name"] == "2":
             temp_2 = [data["ts"],data["value"] ]
     socketio.emit("new_temp_data",[temp_1,temp_2])
-    global data_queue, result_queue
-    if data_queue.empty():
+    global data_queue, result_queue, got_result, last_pushed
+    if data_queue.empty() and got_result and ((time.time_ns()-last_pushed)*1e-9 > 10.0):
         #data_queue.get()
         data_queue.put(database.getInterpolBetweenTime(10, start_time) + [start_time] + [core_ref_temp])
+        got_result = False
+        last_pushed = time.time_ns()
     if result_queue.full():
         result = result_queue.get()
         socketio.emit("new_prediction",[result])
+        got_result = True
+        
         # print("emit_prediction")
 
 
@@ -119,10 +126,11 @@ def predictor(data_queue, result_queue):
             result = [t_fit.tolist(), oven_fit, meat_params[1].tolist(),t_pred.tolist(), oven_temp, meat_state, t_end]
 
             result_queue.put(result)
-            time.sleep(10) 
+            #time.sleep(10) 
 
         except BaseException as err:
             print(f"Unexpected {err=}, {type(err)=}")
+            traceback.print_exc()
             time.sleep(10) 
 
 

@@ -5,16 +5,16 @@ import casadi as cad
 class MeatModel():
     def __init__(self, num_elemnets = 10) -> None:
         self._num_elements = num_elemnets
-        x_sim = cad.SX.sym("x_sim",self._num_elements)
-        u_sim = cad.SX.sym("u_sim", 1)
-        r_sim = cad.SX.sym("r_sim",1)
-        dt_sim = cad.SX.sym("dt_sim",1)
-        x_next = self.next_state_casadi(x_sim,u_sim,r_sim,dt_sim)
-        self.casadi_fun = cad.Function('next_sttate', [x_sim, u_sim, r_sim, dt_sim], [x_next],['x0_sim','u_sim', 'r_sim', 'dt_sim'],['x_next',])
+        x_sim_meat = cad.SX.sym("x_sim_meat",self._num_elements)
+        u_sim_meat = cad.SX.sym("u_sim_meat", 1)
+        r_sim_meat = cad.SX.sym("r_sim_meat",1)
+        dt_sim_meat = cad.SX.sym("dt_sim_meat",1)
+        x_next = self.next_state_casadi(x_sim_meat,u_sim_meat,r_sim_meat,dt_sim_meat)
+        self.casadi_fun = cad.Function('next_state', [x_sim_meat, u_sim_meat, r_sim_meat, dt_sim_meat], [x_next],['x0_sim_meat','u_sim_meat', 'r_sim_meat', 'dt_sim_meat'],['x_next',])
 
     def ode_casadi(self,x,u,r):
         dT = []
-        r_scaled =  1/(r * self._num_elements)
+        r_scaled = 1/(r * self._num_elements)
         dT.append(r_scaled  * (u/2.0 - x[0] + x[1]/2.0))
         for i in range(1,self._num_elements - 1):
             dT.append(r_scaled * (x[i-1]/2.0 - x[i] + x[i+1]/2.0))
