@@ -22,18 +22,19 @@ class OvenEstimator():
         index_changes = np.where(diff > 1)[0]
         print("changes_before", index_changes)
         # add logic for filtering
-        filtered_changes = []
+        
         if index_changes.shape[0] > 1:
-            last_index = 0
-            for i in range(index_changes.shape[0]):
+            last_index = index_changes[0]
+            filtered_changes = [last_index]
+            for i in range(1, index_changes.shape[0]):
                 curr_diff = index_changes[i] - last_index
-                if curr_diff > 6:
+                if curr_diff > 15:
                     filtered_changes.append(index_changes[i])
                     last_index = index_changes[i]
             
             index_changes = np.array(filtered_changes)
         print("changes_after", index_changes)
-
+        steps = 0
         if index_changes.shape[0] == 1:
             steps = np.max([index_changes*2.0,meas.shape[0]])
         elif index_changes.shape[0] == 2:
@@ -43,6 +44,7 @@ class OvenEstimator():
             phase_1 = diff_indices[::2]
             phase_2 = diff_indices[1::2]
             steps = np.mean(phase_1) + np.mean(phase_2)
+        
         if steps == 0:
             w = 0.0
         else: 

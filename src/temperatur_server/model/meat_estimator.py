@@ -29,7 +29,7 @@ class MeatEstimator():
         for i in range(self._num_elements):
             g.append(x_0[i])
             lbg.append(0.0)
-            ubg.append(25.0)
+            ubg.append(60.0)
         
 
         x_curr = x_0
