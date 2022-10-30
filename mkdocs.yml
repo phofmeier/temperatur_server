@@ -5,13 +5,13 @@ theme:
   features:
     - navigation.tracking
 
-repo_url: https://github.com/PeterHofmeier/crane_simulator
+repo_url: https://github.com/phofmeier/temperatur_server/
 
 plugins:
   - search
-  - bibtex:
-      bib_dir: "docs/bib/"
-      csl_file: "docs/bib/ieee.csl"
+  # - bibtex:
+  #     bib_dir: "docs/bib/"
+  #     csl_file: "docs/bib/bib_file.csl"
   - mkdocstrings:
       default_handler: python
       handlers:
