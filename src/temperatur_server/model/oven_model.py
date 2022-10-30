@@ -1,34 +1,58 @@
 import numpy as np
-import casadi as cad
 
-class OvenModel():
+
+class OvenModel:
     def __init__(self) -> None:
         pass
 
-    def two_point_controller(self,temp, heating,upper_temp,lower_temp):
+    def two_point_controller(self, temp, heating, upper_temp, lower_temp):
         if heating and temp >= upper_temp:
             heating = False
         if not heating and temp <= lower_temp:
             heating = True
         return heating
 
- 
-    def ode(self,x, heating, ambient_constant,heat_constant, temp_ambient, damping):
+    def ode(self, x, heating, ambient_constant, heat_constant, temp_ambient, damping):
         """
         state = T, heating
         heating = if heating & T> upper -> heating=False
         dT = k*(T_a - T) + u
-        u = 
+        u =
 
         """
-        dx = np.array([x[1],ambient_constant * (temp_ambient - x[0]) + heating * heat_constant - damping*x[1]])
-         
+        dx = np.array(
+            [
+                x[1],
+                ambient_constant * (temp_ambient - x[0])
+                + heating * heat_constant
+                - damping * x[1],
+            ]
+        )
+
         return dx
 
-    def next_temp(self,x, heating,upper_temp,lower_temp, ambient_constant,heat_constant, temp_ambient,damping,dt):
-        heating = self.two_point_controller(x[0],heating, upper_temp,lower_temp)
-        
-        return x + self.ode(x, heating, ambient_constant,heat_constant, temp_ambient,damping)*dt , heating
+    def next_temp(
+        self,
+        x,
+        heating,
+        upper_temp,
+        lower_temp,
+        ambient_constant,
+        heat_constant,
+        temp_ambient,
+        damping,
+        dt,
+    ):
+        heating = self.two_point_controller(x[0], heating, upper_temp, lower_temp)
+
+        return (
+            x
+            + self.ode(
+                x, heating, ambient_constant, heat_constant, temp_ambient, damping
+            )
+            * dt,
+            heating,
+        )
 
 
 # import matplotlib.pyplot as plt
@@ -45,9 +69,11 @@ class OvenModel():
 
 # curr_temp = np.array([20.0,0.0])
 # tempertures =  [curr_temp]
-#oven = OvenModel()
+# oven = OvenModel()
 # for i in range(4*600):
-#     curr_temp, heating = oven.next_temp(curr_temp,heating, upper_temp,lower_temp,ambient_constant,heat_constant,temp_ambient,dt)
+#     curr_temp, heating = oven.next_temp(curr_temp,heating,
+# upper_temp,lower_temp,ambient_constant,
+# heat_constant,temp_ambient,dt)
 #     tempertures.append(curr_temp)
 
 # plt.figure()
@@ -57,6 +83,7 @@ class OvenModel():
 # upper_temp = cad.SX.sym("ut",1)
 # lower_temp = cad.SX.sym("lt",1)
 # heating = cad.SX.sym("h",1)
-# next_heating, next_state = oven.next_temp_casadi(curr_temp,heating, upper_temp,lower_temp,ambient_constant,heat_constant,temp_ambient,damping,dt)
+# next_heating, next_state = oven.next_temp_casadi(curr_temp,heating,
+#  upper_temp,lower_temp,ambient_constant,heat_constant,temp_ambient,damping,dt)
 # print(next_heating)
-# print(next_state) 
+# print(next_state)

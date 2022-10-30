@@ -1,22 +1,22 @@
-from statistics import mode
-import numpy as np
 import casadi as cad
+import numpy as np
 
-class MeatModel():
-    def __init__(self, num_elemnets = 10) -> None:
+
+class MeatModel:
+    def __init__(self, num_elemnets=10) -> None:
         self._num_elements = num_elemnets
 
-    def ode_casadi(self,x,u,r):
+    def ode_casadi(self, x, u, r):
         dT = []
-        r_scaled =  1/(r * self._num_elements)
-        dT.append(r_scaled  * (u/2.0 - x[0] + x[1]/2.0))
-        for i in range(1,self._num_elements - 1):
-            dT.append(r_scaled * (x[i-1]/2.0 - x[i] + x[i+1]/2.0))
-        dT.append(r_scaled * (x[self._num_elements - 2] - x[self._num_elements-1]))
+        r_scaled = 1 / (r * self._num_elements)
+        dT.append(r_scaled * (u / 2.0 - x[0] + x[1] / 2.0))
+        for i in range(1, self._num_elements - 1):
+            dT.append(r_scaled * (x[i - 1] / 2.0 - x[i] + x[i + 1] / 2.0))
+        dT.append(r_scaled * (x[self._num_elements - 2] - x[self._num_elements - 1]))
         return cad.vertcat(*dT)
-    
+
     def next_state_casadi(self, x, u, r, dt):
-        x_next = x + self.ode_casadi(x,u,r) * dt
+        x_next = x + self.ode_casadi(x, u, r) * dt
         return x_next
 
     def ode(self, x, u, r):
@@ -32,16 +32,17 @@ class MeatModel():
         dT_N = r(T_N-1 - T_N)
         """
         dT = []
-        r_scaled =  1/(r * self._num_elements)
-        dT.append(r_scaled  * (u/2.0 - x[0] + x[1]/2.0))
-        for i in range(1,self._num_elements - 1):
-            dT.append(r_scaled * (x[i-1]/2.0 - x[i] + x[i+1]/2.0))
-        dT.append(r_scaled * (x[self._num_elements - 2] - x[self._num_elements-1]))
+        r_scaled = 1 / (r * self._num_elements)
+        dT.append(r_scaled * (u / 2.0 - x[0] + x[1] / 2.0))
+        for i in range(1, self._num_elements - 1):
+            dT.append(r_scaled * (x[i - 1] / 2.0 - x[i] + x[i + 1] / 2.0))
+        dT.append(r_scaled * (x[self._num_elements - 2] - x[self._num_elements - 1]))
         return np.array(dT)
 
     def next_state(self, x, u, r, dt):
-        x_next = x + self.ode(x,u,r) * dt
+        x_next = x + self.ode(x, u, r) * dt
         return x_next
+
 
 # import matplotlib.pyplot as plt
 # model = MeatModel(20)
@@ -63,5 +64,3 @@ class MeatModel():
 
 # x_next = model.next_state_casadi(x,u[0],r,dt)
 # print(x_next)
-
-

@@ -71,4 +71,3 @@ export class TempGauge {
         this.data[0]["gauge"]["steps"][4]["range"][1] = max;
     };
 }
-

@@ -26,7 +26,7 @@ socket.on('new_temp_data', (temp_data) => {
     temp_plot.add_data(temp_data);
     renderAll();
 });
-window.setInterval(function () { //socket.emit("timer"); 
+window.setInterval(function () { //socket.emit("timer");
     updateElapsedTime(); }, 1000);
 
 let ofen_ref = document.getElementById("OvenRef");
@@ -81,11 +81,11 @@ socket.on('new_prediction', (pred_data) => {
     renderAll();
 });
 
-function fullscreen_toggler(event) { 
+function fullscreen_toggler(event) {
     if (window.matchMedia('(display-mode: fullscreen)').matches || document.fullscreenElement) {
-        exitFullscreen();  
-    } else { 
-        enterFullscreen(document.documentElement); 
+        exitFullscreen();
+    } else {
+        enterFullscreen(document.documentElement);
      }
 }
 
@@ -106,7 +106,7 @@ function exitFullscreen() {
 }
 
 function receiveDataSeries(server_response) {
-    let data = JSON.parse(server_response) 
+    let data = JSON.parse(server_response)
     temp_gauge_1.value = data[0].slice(-1)[0][1];
     temp_gauge_2.value = data[1].slice(-1)[0][1];
     temp_plot.add_data_series(data);
