@@ -6,9 +6,9 @@ import numpy as np
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO
 
-from temperatur_server.database import MeasurementDB
-from temperatur_server.measurement_parser import parse_string
-from temperatur_server.model.predictor import Predictor
+from database.database import MeasurementDB
+from input.measurement_parser import parse_string
+from models.predictor import Predictor
 
 port = 5000
 host = "192.168.2.106"  # '127.0.0.1'
@@ -48,7 +48,7 @@ def receive_input():
         and got_result
         and ((time.time_ns() - last_pushed) * 1e-9 > 10.0)
     ):
-        # data_queue.get()
+
         data_queue.put(
             database.getInterpolBetweenTime(10, start_time)
             + [start_time]
@@ -61,8 +61,6 @@ def receive_input():
         socketio.emit("new_prediction", [result])
         got_result = True
 
-        # print("emit_prediction")
-
     return "Measurement Received"
 
 
@@ -74,27 +72,6 @@ def index():
         core_ref_temp=core_ref_temp,
         start_time=start_time,
     )
-
-
-# SocketIO event Listener
-
-
-# @socketio.on("timer")
-# def timer_callback():
-#     curr_time = time.time_ns()
-#     temp_1 = [curr_time, np.random.uniform(10.0, 100.0)]
-
-#     curr_time = time.time_ns()
-#     temp_2 = [curr_time, np.random.uniform(10.0, 100.0)]
-# socketio.emit("new_temp_data",[temp_1,temp_2])
-
-
-#     global output_trajectory, q, learned_trajectories
-#     while not q.empty():
-#         value = q.get(block=False)
-#         output_trajectory = value[0]
-#         learned_trajectories.append(value)
-#         socketio.emit("new_learned_reward", [value[2], value[1]])
 
 
 @socketio.on("getTimeSeries")
@@ -131,8 +108,6 @@ def predictor(data_queue, result_queue):
     dt = 10.0
 
     while True:
-        # print(data_queue.full())
-        # if data_queue.full():
         predictor = Predictor()
         try:
 
@@ -165,7 +140,6 @@ def predictor(data_queue, result_queue):
             ]
 
             result_queue.put(result)
-            # time.sleep(10)
 
         except BaseException as err:
             print(f"Unexpected {err=}, {type(err)=}")

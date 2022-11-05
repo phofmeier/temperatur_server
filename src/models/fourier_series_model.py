@@ -31,12 +31,5 @@ class FourierSeriesModel:
         return value
 
     def func(self, t, amplitudes, w_0, bias, phase):
-        # value = bias
-        # for i in range(amplitudes.shape[0]):
-        #     value += amplitudes[i][0] *
-        # np.cos(w_0 * (i+1) *t+ phase) + amplitudes[i][1]
-        # * np.sin(w_0 * (i+1) * t+ phase)
-
-        # return value
         temp = self.casadi_fun(t, amplitudes, w_0, bias, phase).full().flatten()[0]
         return temp

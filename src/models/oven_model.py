@@ -53,39 +53,3 @@ class OvenModel:
             * dt,
             heating,
         )
-
-
-# import matplotlib.pyplot as plt
-
-# heating = 0.0
-# upper_temp = 50.0
-# lower_temp = 45.0
-# ambient_constant = 0.00008
-# heat_constant = 0.01
-# temp_ambient = 20.0
-# damping=0.011
-# dt = 1.0
-
-
-# curr_temp = np.array([20.0,0.0])
-# tempertures =  [curr_temp]
-# oven = OvenModel()
-# for i in range(4*600):
-#     curr_temp, heating =
-# oven.next_temp(curr_temp,heating, upper_temp,
-# lower_temp,ambient_constant,heat_constant,temp_ambient,dt)
-#     tempertures.append(curr_temp)
-
-# plt.figure()
-# plt.plot(tempertures)
-# plt.show()
-# curr_temp = cad.SX.sym("x",2)
-# upper_temp = cad.SX.sym("ut",1)
-# lower_temp = cad.SX.sym("lt",1)
-# heating = cad.SX.sym("h",1)
-# next_heating, next_state =
-# oven.next_temp_casadi(curr_temp,heating,
-# upper_temp,lower_temp,ambient_constant,
-# heat_constant,temp_ambient,damping,dt)
-# print(next_heating)
-# print(next_state)

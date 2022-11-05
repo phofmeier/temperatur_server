@@ -1,7 +1,7 @@
 import casadi as cad
 import numpy as np
 
-from temperatur_server.model.fourier_series_model import FourierSeriesModel
+from models.fourier_series_model import FourierSeriesModel
 
 
 class OvenEstimator:
@@ -54,40 +54,20 @@ class OvenEstimator:
         bias_calc, w_calc = self.get_frequency(outer_measurements)
         x_init = []
         w = []
-        # g = []
-        # lbg = []
-        # ubg = []
+
         bias = cad.SX.sym("bias", 1)
-        # g.append(bias)
-        # lbg.append(10.0)
-        # ubg.append(200.0)
+
         w.append(bias)
         x_init.append(bias_calc)
         phase = 0
-        # phase = cad.SX.sym("phase",1)
-        # g.append(phase)
-        # lbg.append(-cad.pi)
-        # ubg.append(cad.pi)
-        # w.append(phase)
-        # x_init.append(0.0)
-        # w_0 = cad.SX.sym("w_0",1)
-        # w.append(w_0)
-        # g.append(w_0)
-        # lbg.append(0.00)
-        # ubg.append(10.0)
-        # x_init.append(1.0)
+
         w_0 = w_calc
-        # amplitudes = []
-        # for i in range(self._num_functions):
-        #     amp = cad.SX.sym("amp_" + str(i), 2)
-        #     amplitudes.append(amp)
-        #     w.append(amp)
-        #     x_init.append([0.010,0.01])
+
         amplitudes = cad.SX.sym("amplitudes", (self._num_functions, 2))
         w += cad.horzsplit(amplitudes)
         x_init.append([0.010, 0.01] * self._num_functions)
 
-        f = 0  # 1e-3*cad.norm_1(amplitudes)
+        f = 0
         for i in range(len(outer_measurements)):
             f += (
                 1.001**i
@@ -109,16 +89,15 @@ class OvenEstimator:
         )
         if self.last_x_init is not None:
             x_init = self.last_x_init
-            # x_init = cad.vertcat(*x_init)
             x_init[0] = bias_calc
         else:
             x_init = cad.vertcat(*x_init)
         sol = solver(
             x0=x_init,
-        )  # lbg=cad.vertcat(*lbg), ubg=cad.vertcat(*ubg))
+        )
         fitted_bias = float(sol["x"][0].full()[0])
-        fitted_phase = phase  # float(sol["x"][1].full()[0])
-        fitted_w_0 = w_0  # float(sol["x"][1].full()[0])
+        fitted_phase = phase
+        fitted_w_0 = w_0
         fitted_params = np.zeros((self._num_functions, 2))
         fitted_params[:, 0] = np.array(
             sol["x"][1 : 1 + self._num_functions].full()
@@ -126,44 +105,7 @@ class OvenEstimator:
         fitted_params[:, 1] = np.array(
             sol["x"][1 + self._num_functions :].full()
         ).reshape((self._num_functions,))
-        # fitted_params = np.reshape(np.array(sol["x"][2:].full()),(-1, 2))
+
         self.last_x_init = sol["x"].full().flatten()
-        # print("fitted_w_0: ", fitted_w_0)
-        # print(amplitudes)
-        # print(w[2:])
-        # print(sol["x"][2:].full())
-        # print(fitted_params)
+
         return fitted_params, fitted_w_0, fitted_bias, fitted_phase
-
-
-# from oven_model import OvenModel
-# est = OvenEstimator()
-# oven = OvenModel()
-# import matplotlib.pyplot as plt
-# dt = 10.0
-# t = np.linspace(0,1000*dt,num=1000)
-# outer_meas = 10.0* np.ones_like(t)
-# inner_meas = [1.0]
-# heating = True
-# outer_meas[0] = 30.0
-# oven_state = np.array([30.0 ,0.0])
-# x = np.ones(20)
-# for i in range(999):
-#     oven_state, heating =
-# oven.next_temp(oven_state,heating,55.0,45.0,0.00001, 0.0004, 20.0,0.01,dt)
-#     outer_meas[i+1] = oven_state[0] + np.random.normal()*0.5
-
-# bias,w_0, params = est.fit_params(outer_meas[200:])
-# fitted_temp =
-#  est._model.func(np.array(t[200:], dtype=np.float) - t[200], params, w_0, bias)
-# print("bias: ", bias)
-# print("w_0: ",w_0)
-# print("params: ", params)
-
-
-# plt.figure(figsize=(20,20))
-
-# plt.plot(t[200:], fitted_temp, label="fitted")
-# plt.plot(t,outer_meas, label="meas")
-# plt.legend()
-# plt.show()

@@ -3,8 +3,8 @@ from time import sleep, time
 import numpy as np
 import requests
 
-from simulator.meat_model import MeatModel
-from simulator.oven_model import OvenModel
+from models.meat_model import MeatModel
+from models.oven_model import OvenModel
 
 
 def main():

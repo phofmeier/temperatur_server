@@ -13,9 +13,13 @@ class MeasurementDB:
     def append(self, meas_data):
         for data in meas_data:
             if data["name"] == "1":
-                self.db_1 = self.db_1.append(data, ignore_index=True, sort=False)
+                self.db_1 = pd.concat(
+                    [self.db_1, pd.DataFrame(data, index=[0])], ignore_index=True
+                )
             elif data["name"] == "2":
-                self.db_2 = self.db_2.append(data, ignore_index=True, sort=False)
+                self.db_2 = pd.concat(
+                    [self.db_2, pd.DataFrame(data, index=[0])], ignore_index=True
+                )
         if time.time() > self.last_save_ts + 60.0:
             self.last_save_ts = time.time()
             self.db_1.to_csv("./data/" + self.db_name + "_db_1.csv")
@@ -62,8 +66,5 @@ class MeasurementDB:
         temp_2_db = temp_2_db.set_index("DateTime")
         temp_2_db = temp_2_db[start_time:stop_time]
         temp_2_db = temp_2_db["value"].resample(str(dt) + "s", origin=start).mean()
-
-        # temp_1_str = temp_1_db[["ts", "value"]].to_json(orient="values")
-        # temp_2_str = temp_2_db[["ts", "value"]].to_json(orient="values")
 
         return [temp_1_db.to_list(), temp_2_db.to_list()]
