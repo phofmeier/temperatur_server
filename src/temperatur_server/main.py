@@ -80,6 +80,16 @@ def getTimeSeries(date):
     return return_value
 
 
+@socketio.on("getOvenRefTemp")
+def getOvenRefTemp(date):
+    return oven_ref_temp
+
+
+@socketio.on("getCoreRefTemp")
+def getCoreRefTemp(date):
+    return core_ref_temp
+
+
 @socketio.on("newOvenRef")
 def newOvenRef(data):
     global oven_ref_temp

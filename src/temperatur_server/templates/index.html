@@ -8,10 +8,10 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.plot.ly/plotly-2.3.0.min.js"></script>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
+    <link rel="stylesheet" href="static/css/style.css">
 
-    <script type="module" src="{{ url_for('static',filename='js/temp_gauge.js') }}"></script>
-    <script type="module" src="{{ url_for('static',filename='js/temp_plot.js') }}"></script>
+    <script type="module" src="static/js/temp_gauge.js"></script>
+    <script type="module" src="static/js/temp_plot.js"></script>
 
     <title>Temperature Server</title>
 </head>
@@ -29,15 +29,14 @@
     <div style="clear:both"></div>
     <div id="Plot" style="float:left; height: 50%; width: 100%;"></div>
     </div>
-    </div>
 
     <div style="float:right; width: 20%; height: 90%">
         <h2>Referenz Temperatur</h2>
         <label for="OvenRef">Ofen Referenz Temperatur [°C]</label>
-        <input type="number", step="0.1", id="OvenRef", value= {{ oven_ref_temp }} , min="0" , max="180">
+        <input type="number" step="0.1" id="OvenRef" value= 0 min="0" max="180">
         <br>
         <label for="CoreRef">Kern Referenz Temperatur [°C]</label>
-        <input type="number", step="0.1", id="CoreRef", value= {{ core_ref_temp }} , min="0" , max="180">
+        <input type="number" step="0.1" id="CoreRef" value= 0 min="0" max="180">
         <br>
         <hr>
         <h2>Zeit</h2>
@@ -45,17 +44,17 @@
         <br>
         <label for="StartTime">Start Zeitpunkt</label>
         <br>
-        <input type="datetime-local" id="StartTime", value={{ start_time }}>
+        <input type="datetime-local" id="StartTime">
         <br>
-        <label for="ElapsedTime">Laufende Zeit</label>
+        <label id="ElapsedTimeDesc">Laufende Zeit</label>
         <br>
         <label id="ElapsedTime">0:0:0</label>
         <br>
-        <label for="EndTime">Ende</label>
+        <label id="EndTimeDesc">Ende</label>
         <br>
         <label id="EndTime">0:0:0</label>
         <br>
-        <label for="RemainingTime">Restzeit</label>
+        <label id="RemainingTimeDesc">Restzeit</label>
         <br>
         <label id="RemainingTime">0:0:0</label>
         <br>
@@ -74,7 +73,7 @@
         <br>
     </div>
 
-    <script type="module" src="{{ url_for('static',filename='js/main.js') }}"></script>
+    <script type="module" src="static/js/main.js"></script>
 
 </body>
 
