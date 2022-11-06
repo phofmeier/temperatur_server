@@ -11,8 +11,8 @@ Use the following labels:
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
-## [Unreleased]
+## [0.0.1] - 2022-11-06
 
 ### Added
 
-- Added Changelog.md and workflow to enforce changes on the Changelog.
+- First Version
