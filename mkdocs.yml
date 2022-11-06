@@ -9,6 +9,7 @@ repo_url: https://github.com/phofmeier/temperatur_server/
 
 plugins:
   - search
+  - autorefs
   # - bibtex:
   #     bib_dir: "docs/bib/"
   #     csl_file: "docs/bib/bib_file.csl"
@@ -49,3 +50,9 @@ extra_javascript:
 
 nav:
     - Home: 'index.md'
+    - Source:
+      - Temperature Server: 'source/temperatur_server.md'
+      - Simulator: 'source/simulator.md'
+      - Database: 'source/database.md'
+      - Input: 'source/input.md'
+      - Models: 'source/models.md'
