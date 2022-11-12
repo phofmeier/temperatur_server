@@ -1,3 +1,8 @@
+""" Main application of the Simulator.
+
+The simulator simulates a measurement device
+and sends the values via htttp post to the server.
+"""
 from time import sleep, time
 
 import numpy as np
@@ -8,6 +13,7 @@ from models.oven_model import OvenModel
 
 
 def main():
+    """Run the simulator."""
     port = 5000
     host = "192.168.2.106"
     url = "http://" + host + ":" + str(port) + "/input"

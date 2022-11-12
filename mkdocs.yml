@@ -10,9 +10,6 @@ repo_url: https://github.com/phofmeier/temperatur_server/
 plugins:
   - search
   - autorefs
-  # - bibtex:
-  #     bib_dir: "docs/bib/"
-  #     csl_file: "docs/bib/bib_file.csl"
   - mkdocstrings:
       default_handler: python
       handlers:
@@ -28,6 +25,9 @@ plugins:
             filters:
               - "!^_"  # exclude all members starting with _
               - "^__init__$"  # but always include __init__ modules and methods
+# - bibtex:
+#     bib_dir: "docs/bib/"
+#     csl_file: "docs/bib/bib_file.csl"
 
 markdown_extensions:
   - footnotes
@@ -37,7 +37,11 @@ markdown_extensions:
       anchor_linenums: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - attr_list
   - md_in_html
   - admonition

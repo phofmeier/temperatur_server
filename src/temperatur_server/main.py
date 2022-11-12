@@ -1,3 +1,5 @@
+""" Main implementation of the server.
+"""
 import time
 import traceback
 from multiprocessing import Process, Queue
@@ -158,6 +160,7 @@ def predictor(data_queue, result_queue):
 
 
 def main():
+    """Main function starting the server."""
     global data_queue, result_queue
 
     p = Process(

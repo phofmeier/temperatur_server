@@ -1,9 +1,19 @@
+"""Model implementation of the meat
+"""
+
 import casadi as cad
 import numpy as np
 
 
 class MeatModel:
-    def __init__(self, num_elemnets=10) -> None:
+    """Model defining the temperature in the meat"""
+
+    def __init__(self, num_elemnets: int = 10) -> None:
+        """Initialize the meat model.
+
+        Args:
+            num_elemnets (int, optional): number of elements. Defaults to 10.
+        """
         self._num_elements = num_elemnets
         x_sim_meat = cad.SX.sym("x_sim_meat", self._num_elements)
         u_sim_meat = cad.SX.sym("u_sim_meat", 1)
