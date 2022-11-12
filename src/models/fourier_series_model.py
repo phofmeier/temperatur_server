@@ -1,8 +1,26 @@
+""" Implementation of a Fourier Model.
+"""
 import casadi as cad
 
 
 class FourierSeriesModel:
-    def __init__(self, num_functions) -> None:
+    """Fourier Series Model.
+
+    This model implements a fourier series sum. It is able to
+    approximate any periodic function with a series of sin and
+    cosine functions.
+    """
+
+    def __init__(self, num_functions: int) -> None:
+        """Initialize the Model.
+
+        This model approximates any periodic function with a series of
+        sin and cosine functions.
+        Using more functions leads to a better approximation but tends to overfitting.
+
+        Args:
+            num_functions (int): Number sin and cosine functions.
+        """
         self.num_functions = num_functions
         t_sim = cad.SX.sym("t_sim", 1)
         amp_sim = cad.SX.sym("amp_sim", (self.num_functions, 2))
@@ -19,7 +37,6 @@ class FourierSeriesModel:
                 "temp_sim",
             ],
         )
-        pass
 
     def func_casadi(self, t, amplitudes, w_0, bias, phase):
         value = bias

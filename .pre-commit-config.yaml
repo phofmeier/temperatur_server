@@ -8,6 +8,8 @@ repos:
     -   id: check-json
     -   id: check-added-large-files
     -   id: check-yaml
+        args:
+        - "--unsafe"
     -   id: check-toml
     -   id: debug-statements
     -   id: name-tests-test

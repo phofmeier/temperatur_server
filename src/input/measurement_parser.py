@@ -1,9 +1,22 @@
+"""Implementation of a parser for string measurements.
+"""
 from time import time
+from typing import List
+
+from database.database import Measurement
 
 
-def parse_string(data: str):
+def parse_string(data: str) -> List[Measurement]:
+    """Parse a measurement string to a measurement.
+
+    Args:
+        data (str): string received via http POST.
+
+    Returns:
+        List[Measurement]: Parsed measurements.
+    """
     temp_list = str(data).strip().split("\n")
-    new_sensor_data = []
+    new_sensor_data: List[Measurement] = []
     for sensor_data in temp_list:
         sensor_data_splitted = sensor_data.split(" ")
         sensor_name = ""
