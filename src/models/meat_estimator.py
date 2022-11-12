@@ -1,3 +1,7 @@
+"""Implementation of meat identification.
+"""
+from typing import List, Tuple, Union
+
 import casadi as cad
 import numpy as np
 
@@ -5,19 +9,33 @@ from models.meat_model import MeatModel
 
 
 class MeatEstimator:
+    """Estimates the temperature and model parameter for the meat."""
+
     def __init__(self) -> None:
+        """Initialize the estimator."""
         self._num_elements = 10
         self._dt = 10.0
         self._model = MeatModel(self._num_elements)
         self.last_x_init = None
 
-    def fit_params(self, meas_inner, meas_outer):
-        x_init = []
+    def fit_params(
+        self, meas_inner: List[float], meas_outer: List[float]
+    ) -> Tuple[float, np.ndarray]:
+        """Fit meat parameter to measurements.
+
+        Args:
+            meas_inner (List[float]): Measurements of the core temperature.
+            meas_outer (List[float]): Measurements of the oven temperature.
+
+        Returns:
+            Tuple[float,np.ndarray]: meat resistance param r, temperature states.
+        """
+        x_init: List[Union[float, np.ndarray]] = []
         r = cad.SX.sym("r")
         x_init.append(1.0)
-        g = [r]
-        lbg = [0.0]
-        ubg = [40.0]
+        g: List[Union[float, np.ndarray]] = [r]
+        lbg: List[Union[float, np.ndarray]] = [0.0]
+        ubg: List[Union[float, np.ndarray]] = [40.0]
         x_0 = cad.SX.sym("x_0", self._num_elements)
         w = [r, x_0]
         x_init.append(np.zeros(self._num_elements))

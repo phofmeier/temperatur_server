@@ -9,6 +9,7 @@ This Server receives measurements from a cooking thermometer with two probes. On
 ```mermaid
 flowchart LR
 meas[Measurement Device]
+sim[Simulator]
 inputs[Inputs]
 database[(Database)]
 server[Server]
@@ -16,6 +17,7 @@ predictor[Predictor]
 gui[Web Client]
 
 meas --> inputs
+sim --> inputs
 inputs --> server
 database <--> server
 server <--> predictor
