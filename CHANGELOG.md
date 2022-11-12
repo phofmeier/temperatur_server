@@ -11,8 +11,14 @@ Use the following labels:
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [UNRELEASED]
+
+### Added
+
+- [Patch] Documentation
+
 ## [0.0.1] - 2022-11-06
 
 ### Added
 
-- First Version
+- [Patch] First Version
