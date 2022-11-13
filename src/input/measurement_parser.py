@@ -9,6 +9,14 @@ from database.database import Measurement
 def parse_string(data: str) -> List[Measurement]:
     """Parse a measurement string to a measurement.
 
+    The string is formatted as:
+    Measurement,device=TempSens,Sensor=<name> value=<val> <ts>
+    <name> is the number of the sensor 1 or 2.
+    <val> is the measured value as float.
+    <ts> is the timestamp in ns since epoch. The timestamp is optional.
+    If no timestamp is given the current time is used.
+    After each Measurement a newline indicates a new Measurement.
+
     Args:
         data (str): string received via http POST.
 

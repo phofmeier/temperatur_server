@@ -65,6 +65,7 @@ class Predictor:
         self.result: Optional[PredictionResult] = None
         self.input_q: Queue[PredictionInputData] = Queue(maxsize=1)
         self.output_q: Queue[PredictionResult] = Queue(maxsize=1)
+        self._is_running = False
 
     def fit(
         self, outer_measurement: List[float], inner_measurement: List[float]
@@ -100,28 +101,26 @@ class Predictor:
     def run_parallel(self, input_data: PredictionInputData) -> None:
         self.save_result()
         if self.is_running():
-            # Todo: throw error
-            print("still alive")
             return
         self.input_q.put(input_data)
-        if self.process is not None:
-            self.process.close()
-        self.process = Process(
-            target=self.generate_result,
-            daemon=False,
-        )
-        self.process.start()
+        self._is_running = True
+        if self.process is None or not self.process.is_alive():
+            self.process = Process(
+                target=self.generate_result,
+                daemon=False,
+            )
+            self.process.start()
         return
 
     def is_running(self) -> bool:
         self.save_result()
-        if self.process is None:
+        if self.process is None or not self.process.is_alive():
             return False
-        return self.process.is_alive()
+        return self._is_running
 
     def maybe_get_result(
         self,
-    ) -> Optional[List[Union[List[int], List[float], List[List[float]], int]]]:
+    ) -> Optional[PredictionResult]:
         self.save_result()
         if self.is_running():
             return None
@@ -129,49 +128,51 @@ class Predictor:
         if self.result is not None:
             result_return = copy.deepcopy(self.result)
             self.result = None
-            return result_return.to_list()
+            return result_return
 
         return None
 
     def save_result(self) -> None:
         if not self.output_q.empty():
             self.result = self.output_q.get()
+            self._is_running = False
 
     def generate_result(self) -> None:
-        try:
-            data = self.input_q.get()
-            start_time = data.start_time
-            oven_params, meat_params, t_0 = self.fit(
-                data.outer_measurements, data.inner_measurements
-            )
-            oven_temp, meat_state, duration_to_end = self.predict(
-                data.core_end_temp, t_0
-            )
-            t_fit = start_time + np.array(
-                np.arange(len(meat_params[1])), dtype=int
-            ) * int(self._dt * 1e9)
-            t_pred = t_fit[-1] + np.array(np.arange(len(oven_temp)), dtype=int) * int(
-                self._dt * 1e9
-            )
-            t_oven = (
-                np.array(np.arange(meat_params[1].shape[0]), dtype=float) * self._dt
-            )
-            t_end = start_time + int(duration_to_end * 1e9)
-            oven_fit = []
-            for i in range(t_oven.shape[0]):
-                oven_fit.append(self._oven_est._model.func(t_oven[i], *oven_params))
+        while True:
+            try:
+                data = self.input_q.get()
+                start_time = data.start_time
+                oven_params, meat_params, t_0 = self.fit(
+                    data.outer_measurements, data.inner_measurements
+                )
+                oven_temp, meat_state, duration_to_end = self.predict(
+                    data.core_end_temp, t_0
+                )
+                t_fit = start_time + np.array(
+                    np.arange(len(meat_params[1])), dtype=int
+                ) * int(self._dt * 1e9)
+                t_pred = t_fit[-1] + np.array(
+                    np.arange(len(oven_temp)), dtype=int
+                ) * int(self._dt * 1e9)
+                t_oven = (
+                    np.array(np.arange(meat_params[1].shape[0]), dtype=float) * self._dt
+                )
+                t_end = start_time + int(duration_to_end * 1e9)
+                oven_fit = []
+                for i in range(t_oven.shape[0]):
+                    oven_fit.append(self._oven_est._model.func(t_oven[i], *oven_params))
 
-            result = [
-                t_fit.tolist(),
-                oven_fit,
-                meat_params[1].tolist(),
-                t_pred.tolist(),
-                oven_temp,
-                meat_state,
-                t_end,
-            ]
-            self.output_q.put(PredictionResult(*result))
+                result = [
+                    t_fit.tolist(),
+                    oven_fit,
+                    meat_params[1].tolist(),
+                    t_pred.tolist(),
+                    oven_temp,
+                    meat_state,
+                    t_end,
+                ]
+                self.output_q.put(PredictionResult(*result))
 
-        except BaseException as err:
-            print(f"Unexpected {err=}, {type(err)=}")
-            traceback.print_exc()
+            except BaseException as err:
+                print(f"Unexpected {err=}, {type(err)=}")
+                traceback.print_exc()

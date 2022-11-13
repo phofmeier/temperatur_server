@@ -34,11 +34,16 @@ predictor = Predictor(predictor_dt, predictor_oven_functions, predictor_meat_ele
 def receive_input():
     data = request.get_data(as_text=True)
     new_sensor_data = parse_string(data)
-    new_input_data(new_sensor_data)
+    cb_new_input_data(new_sensor_data)
     return "Measurement Received"
 
 
-def new_input_data(new_data: List[Measurement]):
+def cb_new_input_data(new_data: List[Measurement]):
+    """Callback for new arrived input Measurements.
+
+    Args:
+        new_data (List[Measurement]): New Measurements.
+    """
     database.append(new_data)
     temp_1 = (0, 0.0)
     temp_2 = (0, 0.0)
@@ -52,7 +57,7 @@ def new_input_data(new_data: List[Measurement]):
     global last_pushed, predictor
     result = predictor.maybe_get_result()
     if result is not None:
-        socketio.emit("new_prediction", [result])
+        socketio.emit("new_prediction", [result.to_list()])
     if not predictor.is_running() and (
         (time.time_ns() - last_pushed) * 1e-9 > predictor_dt
     ):
@@ -68,12 +73,7 @@ def new_input_data(new_data: List[Measurement]):
 
 @app.route("/")
 def index():
-    return render_template(
-        "index.html",
-        oven_ref_temp=oven_ref_temp,
-        core_ref_temp=core_ref_temp,
-        start_time=start_time,
-    )
+    return render_template("index.html")
 
 
 @socketio.on("getTimeSeries")
