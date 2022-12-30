@@ -18,6 +18,7 @@ app = Flask(
 )
 socketio = SocketIO(app)
 
+nano_seconds_before_start = 10 * 60 * 1e9
 predictor_dt = 10.0
 predictor_oven_functions = 10
 predictor_meat_elements = 10
@@ -78,7 +79,7 @@ def index():
 
 @socketio.on("getTimeSeries")
 def getTimeSeries(date):
-    return_value = database.getBetweenTime(start_time - (10 * 60 * 1e9))
+    return_value = database.getBetweenTime(start_time - nano_seconds_before_start)
     return return_value
 
 
