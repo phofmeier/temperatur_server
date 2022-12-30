@@ -11,7 +11,7 @@ let temp_plot = new TempPlot("Plot");
 temp_plot.start_time = document.getElementById("StartTime").value;
 
 // Start here
-let socket = io.connect();
+let socket = io();
 let start_time = new Date().valueOf() * 1e6;
 let end_time = new Date().valueOf() * 1e6;
 

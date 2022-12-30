@@ -2,7 +2,7 @@
 """
 
 import time
-from typing import List, Optional, TypedDict
+from typing import List, Optional, Tuple, TypedDict, Union
 
 import pandas as pd
 
@@ -82,12 +82,11 @@ class MeasurementDB:
         temp_2_db = temp_2_db[start_time:stop_time]
         temp_1_str = temp_1_db[["ts", "value"]].to_json(orient="values")
         temp_2_str = temp_2_db[["ts", "value"]].to_json(orient="values")
-
         return f"[{temp_1_str} , {temp_2_str} ]"
 
     def getInterpolBetweenTime(
-        self, dt: float, start: str, stop: Optional[str] = None
-    ) -> List[List[float]]:
+        self, dt: float, start: Union[str, int], stop: Optional[str] = None
+    ) -> Tuple[List[float], List[float]]:
         """Get data between to timepoints interpolated to a uniform timegrid.
 
         The data between start and stop is interpolated to a uniform time grid
@@ -113,12 +112,20 @@ class MeasurementDB:
         temp_1_db["DateTime"] = pd.to_datetime(temp_1_db["ts"])
         temp_1_db = temp_1_db.set_index("DateTime")
         temp_1_db = temp_1_db[start_time:stop_time]
-        temp_1_db = temp_1_db["value"].resample(str(dt) + "s", origin=start).mean()
+        temp_1_db = (
+            temp_1_db["value"]
+            .resample(pd.to_timedelta(dt, unit="s"), origin=start)
+            .mean()
+        )
 
         temp_2_db = self.db_2.copy()
         temp_2_db["DateTime"] = pd.to_datetime(temp_2_db["ts"])
         temp_2_db = temp_2_db.set_index("DateTime")
         temp_2_db = temp_2_db[start_time:stop_time]
-        temp_2_db = temp_2_db["value"].resample(str(dt) + "s", origin=start).mean()
+        temp_2_db = (
+            temp_2_db["value"]
+            .resample(pd.to_timedelta(dt, unit="s"), origin=start)
+            .mean()
+        )
 
-        return [temp_1_db.to_list(), temp_2_db.to_list()]
+        return temp_1_db.to_list(), temp_2_db.to_list()

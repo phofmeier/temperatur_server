@@ -11,10 +11,10 @@ from models.meat_model import MeatModel
 class MeatEstimator:
     """Estimates the temperature and model parameter for the meat."""
 
-    def __init__(self) -> None:
+    def __init__(self, dt: float, num_elements: int) -> None:
         """Initialize the estimator."""
-        self._num_elements = 10
-        self._dt = 10.0
+        self._num_elements = num_elements
+        self._dt = dt
         self._model = MeatModel(self._num_elements)
         self.last_x_init = None
 

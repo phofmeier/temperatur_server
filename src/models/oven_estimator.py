@@ -1,3 +1,5 @@
+from typing import List, Tuple
+
 import casadi as cad
 import numpy as np
 
@@ -5,9 +7,9 @@ from models.fourier_series_model import FourierSeriesModel
 
 
 class OvenEstimator:
-    def __init__(self) -> None:
-        self._dt = 10.0
-        self._num_functions = 20
+    def __init__(self, dt: float, num_functions: int) -> None:
+        self._dt = dt
+        self._num_functions = num_functions
         self._model = FourierSeriesModel(self._num_functions)
         self.last_x_init = None
 
@@ -50,7 +52,9 @@ class OvenEstimator:
             w = 2 * np.pi / (steps * self._dt)
         return bias, w
 
-    def fit_params(self, outer_measurements):
+    def fit_params(
+        self, outer_measurements: List[float]
+    ) -> Tuple[np.ndarray, float, float, float]:
         bias_calc, w_calc = self.get_frequency(outer_measurements)
         x_init = []
         w = []
