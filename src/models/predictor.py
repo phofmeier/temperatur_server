@@ -114,6 +114,16 @@ class Predictor:
     def fit(
         self, outer_measurement: List[float], inner_measurement: List[float]
     ) -> Tuple[Tuple[np.ndarray, float, float, float], Tuple[float, np.ndarray], float]:
+        """Fit parameters to measurements.
+
+        Args:
+            outer_measurement (List[float]): Measurement of outer temperature.
+            inner_measurement (List[float]): Measurement of inner/core temperature.
+
+        Returns:
+            Tuple[Tuple[np.ndarray, float, float, float], Tuple[float, np.ndarray],
+                float]: oven_parameter, meat_parameter, first_timestamp
+        """
         self._oven_params = self._oven_est.fit_params(outer_measurement)
         self._meat_params = self._meat_est.fit_params(
             inner_measurement, outer_measurement
@@ -122,8 +132,20 @@ class Predictor:
         return self._oven_params, self._meat_params, self._t0
 
     def predict(
-        self, ref_temp: float, t_0: float, max_dur: int = 8 * 10 * 60 * 60
+        self, ref_temp: float, t_0: float, max_dur: float = 8.0 * 60 * 60
     ) -> Tuple[List[float], List[List[float]], float]:
+        """Predict temperature until a specific core temperature is reached.
+
+        Args:
+            ref_temp (float): core temperature to reach.
+            t_0 (float): first timestamp
+            max_dur (float, optional): maximum time to look into the future
+                in seconds. Defaults to 8*60*60.
+
+        Returns:
+            Tuple[List[float], List[List[float]], float]:
+                oven_temperature, meat_state, end_timestamp
+        """
         meat_x_0 = self._meat_params[1][-1, :]
         oven_temp = [self._oven_est._model.func(t_0, *self._oven_params)]
         meat_state = [meat_x_0.tolist()]
@@ -143,6 +165,11 @@ class Predictor:
         return oven_temp, meat_state, i * self._dt + t_0
 
     def run_parallel(self, input_data: PredictionInputData) -> None:
+        """run the fitting and prediction in a parallel fashion.
+
+        Args:
+            input_data (PredictionInputData): Measurements for fitting.
+        """
         self.save_result()
         if self.is_running():
             return
@@ -157,6 +184,11 @@ class Predictor:
         return
 
     def is_running(self) -> bool:
+        """Check if prediction is running.
+
+        Returns:
+            bool: true if a prediction is running.
+        """
         self.save_result()
         if self.process is None:
             self._is_running = False
@@ -171,6 +203,11 @@ class Predictor:
     def maybe_get_result(
         self,
     ) -> Optional[PredictionResult]:
+        """Get a result if available else return None.
+
+        Returns:
+            Optional[PredictionResult]: Last prediction result.
+        """
         self.save_result()
         if self.is_running():
             return None
@@ -183,11 +220,16 @@ class Predictor:
         return None
 
     def save_result(self) -> None:
+        """Save result from second process."""
         if not self.output_q.empty():
             self.result = self.output_q.get()
             self._is_running = False
 
     def generate_result(self) -> None:
+        """Generate a new result.
+
+        This function runs in a second process.
+        """
 
         try:
             while True:
