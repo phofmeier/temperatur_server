@@ -15,10 +15,14 @@ Use the following labels:
 
 ### Added
 
-- [Patch] Documentation
+- [Patch] Documentation.
+
+### Changed
+
+- [Patch] Restructured Codebase.
 
 ## [0.0.1] - 2022-11-06
 
 ### Added
 
-- [Patch] First Version
+- [Patch] First Version.
