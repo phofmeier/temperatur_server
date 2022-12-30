@@ -10,6 +10,8 @@ from models.oven_estimator import OvenEstimator
 
 
 class PredictionInputData:
+    """Data Container for Prediction input data."""
+
     def __init__(
         self,
         outer_measurements: List[float],
@@ -17,6 +19,14 @@ class PredictionInputData:
         start_time: int,
         core_end_temp: float,
     ) -> None:
+        """Initialize the container.
+
+        Args:
+            outer_measurements (List[float]): Oven measurements
+            inner_measurements (List[float]): Core temperature measurements.
+            start_time (int): timestamp of the first measurement.
+            core_end_temp (float): Core temperature which should be reached at the end.
+        """
         self.outer_measurements = outer_measurements
         self.inner_measurements = inner_measurements
         self.start_time = start_time
@@ -24,6 +34,8 @@ class PredictionInputData:
 
 
 class PredictionResult:
+    """Data Container for Prediction Results."""
+
     def __init__(
         self,
         timestamps_fit: List[int],
@@ -34,6 +46,21 @@ class PredictionResult:
         meat_state_prediction: List[List[float]],
         timestamp_end: int,
     ) -> None:
+        """Initialize the input data.
+
+        Args:
+            timestamps_fit (List[int]): Timestamps of the fit in ns since epoch.
+            oven_temp_fit (List[float]): Temperature of the oven at the fit.
+            meat_state_fit (List[List[float]]):
+                Temperature of all meat states at the fit.
+            timestamps_prediction (List[int]):
+                Timestamps of the prediction in ns since epoch.
+            oven_temp_prediction (List[float]):
+                Temperature of the oven at the prediction.
+            meat_state_prediction (List[List[float]]):
+                Temperature of the meat states at the prediction.
+            timestamp_end (int): Timestamp when the core end temperature is reached.
+        """
         self.timestamps_fit = timestamps_fit
         self.oven_temp_fit = oven_temp_fit
         self.meat_state_fit = meat_state_fit
@@ -43,6 +70,12 @@ class PredictionResult:
         self.timestamp_end = timestamp_end
 
     def to_list(self) -> List[Union[List[int], List[float], List[List[float]], int]]:
+        """Return as List.
+
+        Returns:
+            List[Union[List[int], List[float], List[List[float]], int]]:
+                List containing all data.
+        """
         return [
             self.timestamps_fit,
             self.oven_temp_fit,
@@ -55,9 +88,20 @@ class PredictionResult:
 
 
 class Predictor:
-    def __init__(
-        self, dt: float = 10, oven_num_func: int = 10, meat_num_func: int = 10
-    ) -> None:
+    """Predicts the time until the meat is ready.
+
+    The measurement data is fit to a model which is used to predict
+    the remaining time until a specific core temperature is reached.
+    """
+
+    def __init__(self, dt: float, oven_num_func: int, meat_num_func: int) -> None:
+        """Initialize the predictor.
+
+        Args:
+            dt (float): timedelta between two measurements in seconds.
+            oven_num_func (int): Used number of functions for the oven model.
+            meat_num_func (int): used number of functions for the meat model.
+        """
         self._oven_est = OvenEstimator(dt, oven_num_func)
         self._meat_est = MeatEstimator(dt, meat_num_func)
         self._dt = dt
@@ -107,14 +151,20 @@ class Predictor:
         if self.process is None or not self.process.is_alive():
             self.process = Process(
                 target=self.generate_result,
-                daemon=False,
+                daemon=True,
             )
             self.process.start()
         return
 
     def is_running(self) -> bool:
         self.save_result()
-        if self.process is None or not self.process.is_alive():
+        if self.process is None:
+            self._is_running = False
+            return False
+        if not self.process.is_alive():
+            self.process.close()
+            self.process = None
+            self._is_running = False
             return False
         return self._is_running
 
@@ -138,8 +188,9 @@ class Predictor:
             self._is_running = False
 
     def generate_result(self) -> None:
-        while True:
-            try:
+
+        try:
+            while True:
                 data = self.input_q.get()
                 start_time = data.start_time
                 oven_params, meat_params, t_0 = self.fit(
@@ -173,6 +224,6 @@ class Predictor:
                 ]
                 self.output_q.put(PredictionResult(*result))
 
-            except BaseException as err:
-                print(f"Unexpected {err=}, {type(err)=}")
-                traceback.print_exc()
+        except BaseException as err:
+            print(f"Unexpected {err=}, {type(err)=}")
+            traceback.print_exc()

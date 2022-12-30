@@ -82,7 +82,6 @@ class MeasurementDB:
         temp_2_db = temp_2_db[start_time:stop_time]
         temp_1_str = temp_1_db[["ts", "value"]].to_json(orient="values")
         temp_2_str = temp_2_db[["ts", "value"]].to_json(orient="values")
-
         return f"[{temp_1_str} , {temp_2_str} ]"
 
     def getInterpolBetweenTime(
