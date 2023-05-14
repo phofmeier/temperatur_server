@@ -11,7 +11,7 @@ from input.measurement_parser import parse_string
 from models.predictor import PredictionInputData, Predictor
 
 port = 5000
-host = "192.168.2.106"  # '127.0.0.1'
+host = "0.0.0.0"
 
 app = Flask(
     __name__,
