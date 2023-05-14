@@ -44,6 +44,10 @@ jobs:
         run: |
           echo ::set-output name=current_version::${GITHUB_REF#refs/tags/v}
         shell: bash
+      - name: Obtain Latest Git ONLY within container for checkout
+        run: |
+          apt-get update
+          apt-get install -y git
       - name: Checkout code
         uses: actions/checkout@v3
         with:
