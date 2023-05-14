@@ -15,6 +15,7 @@ Use the following labels:
 
 ### Added
 
+- [Patch] Support for Docker Container.
 - [Patch] Documentation.
 
 ### Changed
