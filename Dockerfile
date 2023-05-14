@@ -1,9 +1,9 @@
-FROM python:3
+FROM python:3.9
 
 EXPOSE 5000
 
 WORKDIR /home/app
 COPY . .
-RUN pip install -e .
+RUN pip install .
 
-CMD [ "temperatur_server" ]
+CMD [ "python", "src/temperatur_server/main.py" ]
