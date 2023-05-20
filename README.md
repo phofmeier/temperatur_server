@@ -14,6 +14,8 @@ The documentation can be found [here](https://phofmeier.github.io/temperatur_ser
 
 ## Install
 
+### Development
+
 To install the Server clone the repository and run the server in python virtual environment.
 
 ```sh
@@ -21,4 +23,13 @@ python3 -m venv ./venv/
 source venv/bin/activate
 pip install . # or use pip install -e .[dev] for development
 temperatur_server
+```
+
+### Docker
+
+Pull the Docker container from the registry and run it.
+Currently the Network is exposed on port 5000.
+
+```sh
+docker run -d -p5000:5000 ghcr.io/phofmeier/temperatur_server:latest
 ```
