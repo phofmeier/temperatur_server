@@ -11,6 +11,13 @@ Use the following labels:
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [UNRELEASED]
+
+### Added
+
+- [Patch] Documentation.
+- [Patch] Docker latest tag.
+
 ## [0.0.2] - 2023-05-14
 
 ### Added
