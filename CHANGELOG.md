@@ -11,6 +11,12 @@ Use the following labels:
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [UNRELEASED]
+
+### Added
+
+- [Patch] Enhance documentation.
+
 ## [0.0.3] - 2023-05-29
 
 ### Changed

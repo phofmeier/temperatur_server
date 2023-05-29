@@ -23,3 +23,26 @@ database <--> server
 server <--> predictor
 server <---> gui
 ```
+
+## Inputs
+
+This section explains how measurement data can be sent to the server.
+
+### HTTP-POST
+
+Measurements can be sent via a HTTP/POST message. The messages needs to have the following format.
+
+```
+Measurement,device=TempSens,Sensor=<name> value=<val> <ts>
+```
+
+where:
+
+```
+<name> is the number of the sensor (1 or 2).
+<val> is the measured value as float.
+<ts> is the timestamp in ns since epoch.
+```
+
+The timestamp is optional. If no timestamp is given the time at which the message arrives is used.
+After each Measurement a newline indicates a new Measurement. So measurements for two sensors can be sent together.
