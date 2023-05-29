@@ -6,4 +6,4 @@ WORKDIR /home/app
 COPY . .
 RUN pip install .
 
-CMD [ "python", "src/temperatur_server/main.py" ]
+CMD [ "temperatur_server" ]
