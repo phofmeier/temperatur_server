@@ -2,7 +2,6 @@ import pytest
 
 
 def test_import():
-
     try:
         import database.database  # noqa: F401
         import input.measurement_parser  # noqa: F401

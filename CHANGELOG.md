@@ -13,6 +13,10 @@ Use the following labels:
 
 ## [UNRELEASED]
 
+### Changed
+
+- [Patch] Removed `setup.cfg` and moved to `pyproject.toml`.
+
 ### Added
 
 - [Patch] Documentation.

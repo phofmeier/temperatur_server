@@ -6,6 +6,37 @@ requires = [
     "wheel",
     ]
 
+[project]
+name = "temperature_server"
+authors = [
+    {name = "Peter Hofmeier", email = "phofmeier@googlemail.com"},
+]
+description = "Server Application for Oventemperature Measurements"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "MIT"}
+
+dependencies = [
+    "numpy >= 1.22.1",
+    "casadi >= 3.5.5",
+    "requests >= 2.22.0",
+    "pandas >= 1.3.1",
+    "eventlet >= 0.33.1",
+    "Flask >= 2.0.1",
+    "Flask-SocketIO >= 5.1.1",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+dev = ["flake8>=4.0.1", "pytest>=6.2.5", "mypy>=0.931", "black>=21.12b0", "codespell>=2.1.0", "pre-commit>=2.17.0", "mkdocs>=1.2.3", "mkdocstrings[python-legacy]>=0.18.0", "mkdocs-material>=8.1.9", "mkdocs-bibtex>=2.0.1", "matplotlib>=3.6.2"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+temperatur_server = "temperatur_server.main:main"
+oven_simulator = "simulator.main:main"
+
 [tool.setuptools_scm]
 
 [tool.isort]
@@ -21,3 +52,25 @@ files = "src,examples,tests"
 minversion = "6.0"
 addopts = "-ra -q"
 testpaths = ["tests"]
+
+[tool.flake8]
+doctests = true
+exit_zero = false
+max-line-length = 88
+pretty = true
+show_error_codes = true
+statistics = true
+exclude =[
+    ".git",
+    "__pycache__",
+    ".eggs",
+    ".mypy_cache",
+    "output",
+    "venv",
+    "build"]
+ignore = ["I100","I201","E203", "W503"]
+
+
+[tool.codespell]
+skip="src/temperatur_server/templates/*,./venv,./output,./.*,./*/*/__pycache__,./site,./build/*"
+quiet-level = 3
