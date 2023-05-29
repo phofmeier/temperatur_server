@@ -68,7 +68,7 @@ exclude =[
     "output",
     "venv",
     "build"]
-ignore = ["I100","I201","E203"]
+ignore = ["I100","I201","E203", "W503"]
 
 
 [tool.codespell]

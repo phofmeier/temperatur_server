@@ -66,7 +66,7 @@ def cb_new_input_data(new_data: List[Measurement]):
             PredictionInputData(
                 *database.getInterpolBetweenTime(predictor_dt, start_time),
                 start_time,
-                core_ref_temp
+                core_ref_temp,
             )
         )
         last_pushed = time.time_ns()
