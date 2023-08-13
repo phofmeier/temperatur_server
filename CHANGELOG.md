@@ -20,6 +20,7 @@ Use the following labels:
 ### Changed
 
 - [Patch] Code rework for the usage of SocketIO Api.
+- [Patch] Update python version.
 
 ## [0.0.3] - 2023-05-29
 
