@@ -51,14 +51,16 @@ class MeasurementDB:
             self.db_1.to_csv("./data/" + self.db_name + "_db_1.csv")
             self.db_2.to_csv("./data/" + self.db_name + "_db_2.csv")
 
-    def getBetweenTime(self, start: str, stop: Optional[str] = None) -> str:
+    def getBetweenTime(
+        self, start: Union[str, float, int], stop: Optional[str] = None
+    ) -> str:
         """Get all data between two timepoints.
 
         Return all data from start time to stop time as a string.
         If stop is none up to the latest data is returned
 
         Args:
-            start (str): start time
+            start (Union[str, float, int]): start time
             stop (str, optional): stop time. Defaults to None.
 
         Returns:
