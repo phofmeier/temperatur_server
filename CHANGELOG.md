@@ -17,6 +17,10 @@ Use the following labels:
 
 - [Patch] Enhance documentation.
 
+### Changed
+
+- [Patch] Code rework for the usage of SocketIO Api.
+
 ## [0.0.3] - 2023-05-29
 
 ### Changed

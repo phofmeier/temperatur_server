@@ -14,6 +14,7 @@ inputs[Inputs]
 database[(Database)]
 server[Server]
 predictor[Predictor]
+JavaScriptApi[JavaScriptApi]
 gui[Web Client]
 
 meas --> inputs
@@ -21,7 +22,8 @@ sim --> inputs
 inputs --> server
 database <--> server
 server <--> predictor
-server <---> gui
+server <--> JavaScriptApi
+JavaScriptApi <--> gui
 ```
 
 ## Inputs
@@ -46,3 +48,7 @@ where:
 
 The timestamp is optional. If no timestamp is given the time at which the message arrives is used.
 After each Measurement a newline indicates a new Measurement. So measurements for two sensors can be sent together.
+
+## API
+
+It is possible to connect to the Server via a SocketIO api. A brief documentation can be found [here][temperatur_server.api]. More information may follow.

@@ -11,7 +11,7 @@ let temp_plot = new TempPlot("Plot");
 temp_plot.start_time = document.getElementById("StartTime").value;
 
 // Start here
-let socket = io();
+const socket = io("/js");
 let start_time = new Date().valueOf() * 1e6;
 let end_time = new Date().valueOf() * 1e6;
 
@@ -115,10 +115,12 @@ function exitFullscreen() {
 
 function receiveDataSeries(server_response) {
   let data = JSON.parse(server_response);
-  temp_gauge_1.value = data[0].slice(-1)[0][1];
-  temp_gauge_2.value = data[1].slice(-1)[0][1];
-  temp_plot.add_data_series(data);
-  renderAll();
+  if (data[0].length > 0) {
+    temp_gauge_1.value = data[0].slice(-1)[0][1];
+    temp_gauge_2.value = data[1].slice(-1)[0][1];
+    temp_plot.add_data_series(data);
+    renderAll();
+  }
 }
 
 function setOvenRefTemp(new_data) {
