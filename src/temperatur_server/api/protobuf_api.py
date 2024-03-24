@@ -37,3 +37,12 @@ class ProtobufApi(flask_socketio.Namespace):
         settings_msg.core_target_temperature = self.server_state.core_ref_temp
 
         return settings_msg.SerializeToString()
+
+    def on_setSettings(self, data):
+        settings_msg = Settings()
+        settings_msg.ParseFromString(data)
+
+        self.server_state.oven_ref_temp = settings_msg.oven_target_temperature
+        self.server_state.core_ref_temp = settings_msg.core_target_temperature
+
+        self.emit("newSettings", data)
