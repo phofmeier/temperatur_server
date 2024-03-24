@@ -5,6 +5,7 @@ from flask_socketio import SocketIO
 
 from database.database import MeasurementDB
 from temperatur_server.api.js_api import JavaScriptApi
+from temperatur_server.api.protobuf_api import ProtobufApi
 from temperatur_server.server_state import ServerState
 
 
@@ -23,7 +24,10 @@ class ApiManager:
         """
         self.state = state
         self.socket_io = socket_io
-        self.api_list = [JavaScriptApi(state, database, "/js")]
+        self.api_list = [
+            JavaScriptApi(state, database, "/js"),
+            ProtobufApi(state, database, "/pb"),
+        ]
         self.register_apis()
 
     def register_apis(self) -> None:

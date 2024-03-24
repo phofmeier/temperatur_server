@@ -1,0 +1,3 @@
+[submodule "submodule/temperature_proto"]
+	path = submodule/temperature_proto
+	url = git@github.com:phofmeier/temperature_proto.git

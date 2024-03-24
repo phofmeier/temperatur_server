@@ -24,6 +24,7 @@ dependencies = [
     "eventlet >= 0.33.1",
     "Flask >= 2.0.1",
     "Flask-SocketIO >= 5.1.1",
+    "protobuf == 3.20.*",
 ]
 dynamic = ["version"]
 
@@ -31,7 +32,7 @@ dynamic = ["version"]
 dev = ["flake8>=4.0.1", "pytest>=6.2.5", "mypy>=0.931", "black>=21.12b0", "codespell>=2.1.0", "pre-commit>=2.17.0", "mkdocs>=1.2.3", "mkdocstrings[python-legacy]>=0.18.0", "mkdocs-material>=8.1.9", "mkdocs-bibtex>=2.0.1", "matplotlib>=3.6.2"]
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["src", "submodule"]
 
 [project.scripts]
 temperatur_server = "temperatur_server.main:main"

@@ -18,7 +18,7 @@ host = "0.0.0.0"
 app = Flask(
     __name__,
 )
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 server_state = ServerState()
 database = MeasurementDB()
